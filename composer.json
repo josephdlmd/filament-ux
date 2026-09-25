@@ -1,0 +1,10 @@
+{
+    "name": "josephdlmd/filament-ux",
+    "description": "Sourced UX rules for information-dense business tools built with native Filament components, shipped as Laravel Boost guidelines and a skill.",
+    "type": "library",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.3"
+    },
+    "minimum-stability": "stable"
+}
