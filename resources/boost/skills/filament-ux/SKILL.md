@@ -29,6 +29,7 @@ Sources and their dates: `references/sources.md`.
 | Money, percentages, quantities, dates, times, timezones | `references/numbers-and-dates.md` |
 | Dashboards, stats, charts, widgets | `references/dashboards-and-charts.md` |
 | Sign-in, passwords, MFA, profile, user menu, database notifications, error pages | `references/auth-and-panel.md` |
+| Bulk actions, row links, remembered filters with tabs, date tooltips, global search hints, phone inputs, upload limits, chart empty states, session expiry, lookups of admin-editable records | `references/filament-traps.md` (read alongside the area's reference) |
 | Any AI or model judgment shown to people: suggestions, duplicate warnings, similar records, ranked matches, auto-fill | `references/ai-suggestions.md` |
 
 4. **Apply every rule in those references to every screen you touch.** Use Laravel Boost `search-docs` before relying on a Filament method's exact behaviour.

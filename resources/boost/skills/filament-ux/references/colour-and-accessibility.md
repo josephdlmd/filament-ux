@@ -23,6 +23,7 @@ Reversible actions are `gray` (or `primary` when they are the screen's main task
 
 ## 5. Custom colours pass 3:1
 Hard-coded colours (chart series) pass 3:1 against the card in light and dark (`profile.theme` card colours) and the dataviz palette validator; record the ratios in the constant's docblock. **S** (WCAG 1.4.11).
+A palette that passes in both Noir modes (cards `#ffffff` and `#18181b`): amber `#d97706` for to-dos (3.19 and 5.56), green `#199e70` for done (3.41 and 5.20), grey `#71717a` for neutral (4.83 and 3.67). Filament's default amber `#f59e0b` fails 3:1 on white, and a neutral grey always fails the validator's chroma floor; record that as a deliberate exception.
 
 ## 6. Tooltips never hold the only copy
 A tooltip may repeat or expand what's on screen. Anything needed for the task (a figure's working, definitions, names behind codes, abbreviations, why an action is disabled) is also visible text or on a focusable element; Filament tooltips on plain text are hover-only. **C** (WCAG 1.4.13, NN/g).
