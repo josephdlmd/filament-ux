@@ -40,3 +40,6 @@ Show names beside codes and letters, and show a derived figure's working as visi
 
 ## 13. Unsaved work is never lost silently
 Turn on `unsavedChangesAlerts()`. On long edit pages, show that there are unsaved changes next to Save. **P** (NN/g heuristic 5; Shopify, Klaviyo on Mobbin).
+
+## 14. Blank values say so
+A column or entry with no value shows `->placeholder('—')`, or a word that means something ("Never", "Not set") where a dash would be ambiguous, so an empty cell never looks like a loading or broken one. **P**.
