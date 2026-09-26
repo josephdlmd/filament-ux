@@ -49,7 +49,7 @@ final class RecordLayout
     }
 
     /**
-     * @param  list<Component>  $figures  3 to 5 Figures
+     * @param  list<Component>  $figures  3 to 5 Figures, or none
      */
     public function figures(array $figures): self
     {
@@ -87,15 +87,15 @@ final class RecordLayout
     }
 
     /**
-     * The layout as the page's schema: the Figures strip, then the Main column beside the Details aside. Refuses a
-     * strip of fewer than 3 or more than 5 Figures.
+     * The layout as the page's schema: the Figures strip, then the Main column beside the Details aside. A record with
+     * no Figures worth a strip declares none and the strip is left out; a strip of 1–2 or more than 5 is refused.
      */
     public function toSchema(Schema $schema): Schema
     {
         return $schema
             ->columns(1)
             ->components([
-                FiguresStrip::make($this->figures),
+                ...($this->figures === [] ? [] : [FiguresStrip::make($this->figures)]),
                 Grid::make(['lg' => 3])
                     ->schema([
                         MainColumn::make($this->main),

@@ -49,11 +49,12 @@ trait InteractsWithRecordLayout
     }
 
     /**
-     * The Identity bar, in place of the page title as heading.
+     * The Identity bar, in place of the page title as heading. Built afresh on each render, so it names the record as it
+     * is after an action in the same request (Edit renaming it, say), not as the layout first saw it.
      */
     public function getHeading(): string|Htmlable|null
     {
-        return $this->getRecordLayout()->getIdentity() ?? parent::getHeading();
+        return $this->recordLayout(RecordLayout::make())->getIdentity() ?? parent::getHeading();
     }
 
     /**

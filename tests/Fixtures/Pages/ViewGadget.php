@@ -26,6 +26,7 @@ class ViewGadget extends ViewRecord
     {
         return [
             Action::make('restock')->action(fn (): null => null),
+            Action::make('rename')->action(fn (): bool => $this->record->update(['name' => 'Renamed sprocket'])),
         ];
     }
 

@@ -61,6 +61,21 @@ it('starts the Identity bar with the name when the record has no identifier', fu
         ->and(substr_count($html, 'text-gray-500'))->toBe(0);
 });
 
+it('names the record as it is after an action changes it, in the same request', function () {
+    Livewire::test(ViewGadget::class, ['record' => gadget()->getRouteKey()])
+        ->callAction('rename')
+        ->assertSee('Renamed sprocket');
+});
+
+it('leaves the Figures strip out of a record page that declares no Figures', function () {
+    ViewGadget::$figureCount = 0;
+
+    get(GadgetResource::getUrl('view', ['record' => gadget()]))
+        ->assertOk()
+        ->assertSeeTextInOrder(['Main notes', 'Details', 'Aside code'])
+        ->assertDontSeeText('Stock figure');
+});
+
 it('refuses a Figures strip with fewer than 3 or more than 5 Figures', function (int $count) {
     RecordLayout::make()->figures(figuresCounting($count))->toSchema(Schema::make());
 })->with([2, 6])->throws(InvalidArgumentException::class, 'A Figures strip holds 3 to 5 Figures');

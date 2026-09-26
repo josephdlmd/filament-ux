@@ -9,8 +9,8 @@ use InvalidArgumentException;
 /**
  * The row of 3 to 5 Figures under the Identity bar. The grid always has five columns from `lg`, so a Figure is the same
  * width on every record page; a Figure hidden from a viewer is left out and the others close up. A page with more
- * candidate figures moves the less important ones into the Details aside; a strip given fewer than 3 or more than 5 is
- * refused.
+ * candidate figures moves the less important ones into the Details aside, and one with fewer than 3 has no strip; a
+ * strip given fewer than 3 or more than 5 is refused.
  */
 final class FiguresStrip
 {
