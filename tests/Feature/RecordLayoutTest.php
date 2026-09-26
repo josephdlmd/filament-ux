@@ -5,6 +5,7 @@ use Filament\Schemas\Schema;
 use Illuminate\View\ViewException;
 use Josephdlmd\FilamentUx\Layout\DetailsAside;
 use Josephdlmd\FilamentUx\Layout\Figure;
+use Josephdlmd\FilamentUx\Layout\IdentityBar;
 use Josephdlmd\FilamentUx\Layout\RecordLayout;
 use Josephdlmd\FilamentUx\Tests\Fixtures\Gadget;
 use Josephdlmd\FilamentUx\Tests\Fixtures\GadgetResource;
@@ -51,6 +52,13 @@ it('heads the page with the Identity bar and shows no breadcrumbs', function () 
 
     get(GadgetResource::getUrl('view', ['record' => $record]))
         ->assertDontSee('fi-breadcrumbs', false);
+});
+
+it('starts the Identity bar with the name when the record has no identifier', function () {
+    $html = IdentityBar::make(null, 'Acme Trading')->status('VAT unknown', 'warning')->toHtml();
+
+    expect($html)->toContain('Acme Trading', 'VAT unknown')
+        ->and(substr_count($html, 'text-gray-500'))->toBe(0);
 });
 
 it('refuses a Figures strip with fewer than 3 or more than 5 Figures', function (int $count) {

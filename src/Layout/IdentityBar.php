@@ -18,14 +18,15 @@ final class IdentityBar implements Htmlable
     private string|array $statusColor = 'gray';
 
     private function __construct(
-        private readonly string $identifier,
+        private readonly ?string $identifier,
         private readonly string $name,
     ) {}
 
     /**
-     * The record's identifier (such as its code) and its name.
+     * The record's identifier (such as its code) and its name; a record without an identifier passes null and the bar
+     * starts with its name.
      */
-    public static function make(string $identifier, string $name): self
+    public static function make(?string $identifier, string $name): self
     {
         return new self($identifier, $name);
     }
