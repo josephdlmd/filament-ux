@@ -22,7 +22,8 @@ Sources and their dates: `references/sources.md`.
 | Touching | Read |
 | --- | --- |
 | Panel provider, navigation, page structure, record pages, sections, tabs, grids, table layout, density | `references/layout-and-density.md` |
-| Any label, button, heading, helper text, error, confirmation, notification, empty state | `references/copy-and-feedback.md` |
+| Any resource page, custom page or dashboard: which template it is (Record page, List page, Manage page), the Identity bar, Figures, Main column, Details aside, Related lists, `RecordLayout::make()` and the building blocks | `references/page-templates.md` (read alongside `layout-and-density.md`) |
+| Any label, button, heading, helper text, description, error, confirmation, notification, empty state | `references/copy-and-feedback.md` |
 | Form fields, uploads, editors, repeaters | `references/inputs.md` |
 | Tables, search, filters, tabs on lists, bulk actions, import, export, shortcuts | `references/tables-and-finding.md` |
 | Badges, colours, tooltips, icons, contrast, accessibility | `references/colour-and-accessibility.md` |

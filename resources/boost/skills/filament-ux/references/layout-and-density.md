@@ -18,34 +18,34 @@ How to lay out an information-dense business tool with native Filament component
 ## The page
 
 5. **One primary action per screen,** chosen for the role viewing it. Other header actions are `gray` or in an `ActionGroup` ("…"). **C** (GOV.UK, NN/g; Mobbin).
-6. **Every page names its record.** Every resource sets a record title (identifier and name), so headings and breadcrumbs name the record; a subheading is at most one line of status. **C** (NN/g, GOV.UK breadcrumbs).
-7. **A state that needs action is a Callout at the top,** conditional, with its fixing action. Field guidance is helper text; outcomes are notifications. **C** (GOV.UK banner, inset and warning text).
-8. **Pop-up size fits the task.** Confirmations and one to three fields: a modal (`Width::Medium`). A form that needs the list or record beside it: `slideOver()`. Long edits with uploads: a full page. An action opens the same way everywhere. **S** (NN/g modals) plus **P**.
-9. **Simple resources for flat reference lists.** A few short fields, no uploads, no related lists: `ManageRecords` with modal create and edit. Anything with related records or uploads gets full pages. **S** plus **P**.
+6. **Every page names its record, once.** Every resource sets a record title (identifier and name). A Record page's Identity bar names the record (`page-templates.md` rule 4); breadcrumbs are off panel-wide (`breadcrumbs(false)`), since the top bar and the heading already say where you are; no page has a subheading. **C** (NN/g, GOV.UK) plus **P**.
+7. **A state that needs action comes first,** conditional, with its fixing action: first in a Record page's Main column, a Callout at the top of other pages. Outcomes are notifications. **C** (GOV.UK banner, inset and warning text).
+8. **Every add and edit is a slide-over,** wizards included, so the list or record behind stays in view: set `slideOver()` once with `CreateAction::configureUsing()` and `EditAction::configureUsing()`, and on any custom action that adds or edits. A centred modal (`Width::Medium`) is only for a confirmation of a loss or a quick action with one value to decide. No Create or Edit pages. An action opens the same way everywhere. **S** (NN/g modals) plus **P**.
+9. **Manage pages for flat reference lists.** A few short fields and no related lists: a `ManageRecords` Manage page with slide-over add and edit (`page-templates.md` rule 2). Anything with related records gets a Record page. **S** plus **P**.
 
 ## Record pages
 
-10. **Two columns on wide screens.** Main content (two thirds: the working fields and related records) and a details aside (one third: identifiers, status, owner, dates) using a `Grid` with column spans, collapsing to one column below `lg`. **P** (Mobbin: Stripe, Shopify, Linear, Attio).
-11. **A figures strip under the title.** Up to five key figures (totals, balances, counts), larger than body text, in one row. **P** (Mobbin).
-12. **View page when records are looked up more than changed,** or roles differ; otherwise the row opens Edit. `profile.users = daily`: allow per-section edit actions on the View page for frequent small changes. Relation managers stay read-only on View unless the View page is the working surface. **P**; Mobbin shows both.
+10. **Record pages follow the Record page template.** The Identity bar, the Figures strip, then the Main column (two thirds: content, widgets and Related lists) beside the sticky Details aside (one third: identifiers, classification, owner, dates) from `lg`, one column below. Build it with `RecordLayout::make()` (`page-templates.md`). **P** (Mobbin: Stripe, Shopify, Linear, Attio).
+11. **A Figures strip under the Identity bar.** 3 to 5 key Figures (totals, balances, counts), larger than body text, right-aligned, in one row, each with at most one caption line of data (`page-templates.md` rule 5). **P** (Mobbin).
+12. **A Record page when records are looked up more than changed,** or roles differ; otherwise a Manage page whose row opens the Edit slide-over. `profile.users = daily`: allow per-section edit actions on the View page for frequent small changes. Relation managers stay read-only on View unless the View page is the working surface. **P**; Mobbin shows both.
 13. **Related data by lifecycle.** `Select` to pick one; `Repeater` for a few owned rows saved with the parent; relation manager for independent records with their own actions; `ManageRelatedRecords` when that list is a daily task in itself. **P**.
-14. **Relation managers most used first;** group rarely used ones with `RelationGroup` from four; never combine them with the details tab on View pages, so the summary stays visible. **S** plus **P**.
+14. **Related lists most used first,** in the Main column (`page-templates.md` rule 8); group rarely used ones with `RelationGroup` from four; never combine them with the details tab on View pages, so the summary stays visible. **S** plus **P**.
 15. **Previous and next on records people work through in order** (a queue): header actions that keep the list's filters. **P** (Mobbin).
 
 ## Sections, tabs and grids
 
 16. **Scrolling Sections by default.** Tabs only for a few short-labelled groups where the first is what most people need and nobody compares across them: at most 5 for `profile.users = daily`, none for occasional users. Tabs are horizontal, one row, never nested, and call `persistTabInQueryString()`; never disable a tab. Tabs on record pages usually hold related records, with the summary kept visible. **C** (NN/g, GOV.UK, Fluent; Mobbin).
 17. **Fieldset, Section and Grid mean different things.** Fieldset binds inputs that answer one question (an address). Section is a topic with a heading. Grid, Group, Flex and FusedGroup are layout with no heading. Collapse only rarely used Sections, with `persistCollapsed()`, never one holding a required field, and never more than one collapsed level. **C**.
-18. **Dense inside a group, space between groups.** Use `Section->compact()` and `aside()` to tighten, never nest more than one level of bordered containers, and separate topics with Section spacing rather than extra wrappers. **C** (Carbon, Atlassian spacing).
+18. **Dense inside a group, space between groups.** Use `Section->compact()` and `aside()` to tighten, never nest more than one level of bordered containers, and separate topics with Section spacing rather than extra wrappers. On a Record page the Main column is flat and the Details aside is the only box. **C** (Carbon, Atlassian spacing).
 19. **Read-only grids widen with the screen.** Infolists: 1 column, 2 from `lg`, 3 from `2xl` (`columns(['default' => 1, 'lg' => 2, '2xl' => 3])`). Only short, related fields share a row. **C** (Carbon, Fluent grids).
-20. **Forms are one column.** Only short, related inputs share a row (City · Postcode). **C** (NN/g forms, GOV.UK).
+20. **Forms are one column with no boxed Sections.** Only short, related inputs share a row (City · Postcode), and a heading appears only between genuinely different groups of fields. **C** (NN/g forms, GOV.UK).
 21. **Same fields, same order, everywhere.** Create, Edit and View build from shared schema methods in one order. **S** (NN/g heuristic 4).
 22. **Inline labels only in the read-only details aside** (`inlineLabel()` on entries). Forms keep labels above their fields. **C** (NN/g forms, Pajamas).
 
 ## Tables
 
 23. **Twenty-five rows per page by default** (options 25, 50, 100), set once with `Table::configureUsing()`. **C** (Pajamas, Carbon; the most common default on Mobbin).
-24. **A column budget.** At most 8 visible columns plus the action column at `profile.min_screen_width` 1440px (6 at laptop widths). The identifier comes first, then the columns people decide on; the rest are `toggleable(isToggledHiddenByDefault: true)`. `striped()` from 6 columns. A second line goes in `description()` rather than a new column. At most one inline row action; the row click opens the record. **C** (NN/g data tables, Carbon; Mobbin).
+24. **A column budget.** At most 8 visible columns plus the action column at `profile.min_screen_width` 1440px (6 at laptop widths). The identifier comes first, then the columns people decide on; the rest are `toggleable(isToggledHiddenByDefault: true)`. `striped()` from 6 columns. A second line goes in `description()` rather than a new column. At most one inline row action, the most common task, with the rest in one `ActionGroup` ("…"); the row click opens the record, or its Edit slide-over on a Manage page. **C** (NN/g data tables, Carbon; Mobbin).
 25. **Wrap names, clamp free text only when the full text is one click away.** Identifiers and names `wrap()`. Notes and descriptions use `limit()`/`lineClamp()` only when every role that sees the column can open the full text (the View page or an action), because a tooltip can only repeat it. Badge lists use `limitList()`. **C** (WCAG 1.4.13, NN/g).
 
 ## The floor and the limits
