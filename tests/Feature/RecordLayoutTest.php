@@ -1,5 +1,6 @@
 <?php
 
+use Filament\Actions\Testing\TestAction;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 use Illuminate\View\ViewException;
@@ -81,6 +82,16 @@ it('shows a Figure\'s label, value and caption aligned to the end, the label sti
     expect($html)->toMatch('/fi-sr-only"\s+role="term">\s*Stock figure/')
         ->and(substr_count($html, 'fi-align-end'))->toBeGreaterThanOrEqual(3)
         ->and($html)->toMatch('/class="(?=[^"]*\btext-end\b)(?=[^"]*\bfi-sc-text\b)[^"]*"[^>]*>\s*ex-VAT · 3 offers/');
+});
+
+it('puts the Details aside\'s actions on its heading row', function () {
+    get(GadgetResource::getUrl('view', ['record' => gadget()]))
+        ->assertOk()
+        ->assertSeeInOrder(['fi-section-header', 'Details', 'Edit details', 'fi-section-content', 'Aside code'], escape: false);
+
+    Livewire::test(ViewGadget::class, ['record' => gadget()->getRouteKey()])
+        ->callAction(TestAction::make('editDetails')->schemaComponent('details::section', 'infolist'))
+        ->assertHasNoActionErrors();
 });
 
 it('names the record as it is after an action changes it, in the same request', function () {

@@ -56,6 +56,9 @@ class ViewGadget extends ViewRecord
             ])
             ->aside([
                 TextEntry::make('code')->label('Aside code'),
+            ])
+            ->asideActions([
+                Action::make('editDetails')->label('Edit details')->action(fn (): null => null),
             ]);
     }
 }

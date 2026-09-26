@@ -2,6 +2,8 @@
 
 namespace Josephdlmd\FilamentUx\Layout;
 
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
@@ -29,6 +31,11 @@ final class RecordLayout
      * @var list<Component>
      */
     private array $aside = [];
+
+    /**
+     * @var list<Action|ActionGroup>
+     */
+    private array $asideActions = [];
 
     /**
      * An empty layout, its slots filled by the page's recordLayout().
@@ -81,6 +88,19 @@ final class RecordLayout
     /**
      * The Identity bar, or null when the page keeps Filament's own heading.
      */
+    /**
+     * Actions on the Details aside's heading row, for what acts on the details it holds (Edit), rather than in the
+     * Identity bar.
+     *
+     * @param  list<Action|ActionGroup>  $actions
+     */
+    public function asideActions(array $actions): self
+    {
+        $this->asideActions = $actions;
+
+        return $this;
+    }
+
     public function getIdentity(): ?IdentityBar
     {
         return $this->identity;
@@ -99,7 +119,7 @@ final class RecordLayout
                 Grid::make(['lg' => 3])
                     ->schema([
                         MainColumn::make($this->main),
-                        DetailsAside::make($this->aside),
+                        DetailsAside::make($this->aside, $this->asideActions),
                     ]),
             ]);
     }

@@ -2,6 +2,8 @@
 
 namespace Josephdlmd\FilamentUx\Layout;
 
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 
@@ -16,10 +18,12 @@ final class DetailsAside
 
     /**
      * @param  list<Component>  $components
+     * @param  list<Action|ActionGroup>  $actions  shown on the aside's heading row, such as Edit for the details it holds
      */
-    public static function make(array $components): Section
+    public static function make(array $components, array $actions = []): Section
     {
         return Section::make('Details')
+            ->headerActions($actions)
             ->compact()
             ->inlineLabel()
             ->columnSpan(['lg' => 1])
