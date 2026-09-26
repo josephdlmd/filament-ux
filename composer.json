@@ -1,10 +1,40 @@
 {
     "name": "josephdlmd/filament-ux",
-    "description": "Sourced UX rules for information-dense business tools built with native Filament components, shipped as Laravel Boost guidelines and a skill.",
+    "description": "Sourced UX rules and opinionated page-layout building blocks for information-dense business tools built with native Filament components.",
     "type": "library",
     "license": "proprietary",
     "require": {
-        "php": "^8.3"
+        "php": "^8.3",
+        "filament/filament": "^5.0"
     },
-    "minimum-stability": "stable"
+    "require-dev": {
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^5.0",
+        "pestphp/pest-plugin-laravel": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Josephdlmd\\FilamentUx\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Josephdlmd\\FilamentUx\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Josephdlmd\\FilamentUx\\FilamentUxServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

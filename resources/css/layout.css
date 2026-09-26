@@ -1,0 +1,11 @@
+/*
+ * The record page template's one custom rule: the Details aside stays in view while the Main column scrolls. Filament
+ * wraps each grid item in `.fi-grid-col > .fi-sc-component`, so the grid item, not the Section, is made sticky.
+ */
+@source '../views';
+
+.fi-grid-col:has(> .fi-sc-component > .fux-details-aside) {
+    position: sticky;
+    top: calc(var(--topbar-height, 4rem) + 1rem);
+    align-self: start;
+}

@@ -1,0 +1,74 @@
+<?php
+
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Schema;
+use Illuminate\View\ViewException;
+use Josephdlmd\FilamentUx\Layout\DetailsAside;
+use Josephdlmd\FilamentUx\Layout\Figure;
+use Josephdlmd\FilamentUx\Layout\RecordLayout;
+use Josephdlmd\FilamentUx\Tests\Fixtures\Gadget;
+use Josephdlmd\FilamentUx\Tests\Fixtures\GadgetResource;
+use Josephdlmd\FilamentUx\Tests\Fixtures\Pages\ViewGadget;
+use Josephdlmd\FilamentUx\Tests\Fixtures\User;
+use Livewire\Livewire;
+
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\get;
+
+beforeEach(function () {
+    ViewGadget::$figureCount = 3;
+    actingAs(User::query()->create(['name' => 'Ana', 'email' => 'ana@example.com', 'password' => 'secret']));
+});
+
+function gadget(): Gadget
+{
+    return Gadget::query()->create(['code' => 'G-0001', 'name' => 'Sprocket', 'status' => 'active']);
+}
+
+/**
+ * @return list<TextEntry>
+ */
+function figuresCounting(int $count): array
+{
+    return array_map(fn (int $index): TextEntry => Figure::make("figure_{$index}")->state($index), range(1, $count));
+}
+
+it('renders the Figures strip, then the Main column beside a single Details aside', function () {
+    $page = get(GadgetResource::getUrl('view', ['record' => gadget()]))->assertOk();
+
+    $page->assertSeeTextInOrder(['Stock figure', 'Reorder figure', 'Lead time figure', 'Main notes', 'Handle with care', 'Details', 'Aside code', 'G-0001']);
+
+    expect(substr_count($page->getContent(), DetailsAside::CSS_CLASS))->toBe(1);
+});
+
+it('heads the page with the Identity bar and shows no breadcrumbs', function () {
+    $record = gadget();
+
+    $page = Livewire::test(ViewGadget::class, ['record' => $record->getRouteKey()]);
+
+    expect($page->instance()->getBreadcrumbs())->toBe([])
+        ->and((string) $page->instance()->getHeading()->toHtml())->toContain('G-0001', 'Sprocket', 'Active');
+
+    get(GadgetResource::getUrl('view', ['record' => $record]))
+        ->assertDontSee('fi-breadcrumbs', false);
+});
+
+it('refuses a Figures strip with fewer than 3 or more than 5 Figures', function (int $count) {
+    RecordLayout::make()->figures(figuresCounting($count))->toSchema(Schema::make());
+})->with([2, 6])->throws(InvalidArgumentException::class, 'A Figures strip holds 3 to 5 Figures');
+
+it('refuses to render a record page declaring fewer than 3 or more than 5 Figures', function (int $count) {
+    ViewGadget::$figureCount = $count;
+
+    Livewire::test(ViewGadget::class, ['record' => gadget()->getRouteKey()]);
+})->with([2, 6])->throws(ViewException::class, 'A Figures strip holds 3 to 5 Figures');
+
+it('renders a record page declaring 5 Figures', function () {
+    ViewGadget::$figureCount = 5;
+
+    get(GadgetResource::getUrl('view', ['record' => gadget()]))->assertOk()->assertSeeText('Batch figure');
+});
+
+it('builds a Figures strip of 3 to 5 Figures', function (int $count) {
+    expect(RecordLayout::make()->figures(figuresCounting($count))->toSchema(Schema::make()))->toBeInstanceOf(Schema::class);
+})->with([3, 5]);
