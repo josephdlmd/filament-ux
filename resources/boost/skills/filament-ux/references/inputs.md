@@ -18,7 +18,7 @@ Pre-select a setting with a safe default ("Payment terms: 30 days", then `select
 Use the native `DatePicker` with `minDate()`/`maxDate()`. `native(false)` only for dates near today that people pick rather than type. **C** (NN/g, GOV.UK). Popover calendars are common; typed entry is better supported for trained users.
 
 ## 6. Match the TextInput to the data
-`email()`, `tel()`, `numeric()`/`integer()`, `password()->revealable()`; units and currency in `prefix()`/`suffix()`. **P**.
+`email()`, `tel()`, `numeric()`/`integer()`, `password()->revealable()`; units and currency in `prefix()`/`suffix()`. A value with a fixed shape takes `mask()`, so it is written as it is typed and a stray letter never lands: a tax number `'999-999-999-99999'`; a phone number a `RawJs` mask per shape, the national form for the app's country ("0917 123 4567", "(02) 8123 4567") and `+` and digits for one abroad. A saved value opens in the shape its mask writes (`formatStateUsing()`), and the server still checks and normalises it, since a mask is only typing help. **P**.
 
 ## 7. Size fields to the answer
 TextInput for one line, Textarea for more, and the same component for a field on every screen. Character count only for a real limit. **C** (GOV.UK).

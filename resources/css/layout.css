@@ -37,3 +37,56 @@
         }
     }
 }
+
+/* One type scale for a record's details, from the page's subject down to a caption: the record's name (a Related
+ * list heading that names it) at 18px, the Details aside's heading at 16px, a DetailsGroup's heading at 14px, then
+ * values in the text colour over quieter gray labels, and a value's links and caption smaller and lighter still. */
+.fux-names-record .fi-ta-header-heading {
+    font-size: var(--text-lg);
+    line-height: var(--text-lg--line-height);
+}
+
+.fux-details-group .fi-section-header-heading {
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+}
+
+:is(.fux-details-aside, .fux-details-group) {
+    & .fi-in-entry-label {
+        font-weight: 400;
+        color: var(--gray-500);
+
+        :where(.dark) & {
+            color: var(--gray-400);
+        }
+    }
+
+    & .fi-in-text-item.fi-color-primary {
+        color: var(--gray-950);
+
+        :where(.dark) & {
+            color: var(--color-white);
+        }
+
+        & a:hover,
+        a.fi-in-entry-content:hover & {
+            text-decoration: underline;
+        }
+    }
+
+    & .fi-in-entry-content-col > .fi-sc {
+        & .fi-link,
+        & .fi-sc-text {
+            font-size: var(--text-xs);
+            line-height: var(--text-xs--line-height);
+        }
+
+        & .fi-sc-text {
+            color: var(--gray-500);
+
+            :where(.dark) & {
+                color: var(--gray-400);
+            }
+        }
+    }
+}

@@ -11,11 +11,11 @@ Capitalise the first word and glossary terms only ("Add Order", "Payments for th
 ## 3. Buttons are verbs, and a popup's buttons answer its title
 A button says what happens in a couple of words; never "OK", "Yes" or a bare noun. The create verb is `profile.create_verb` everywhere, set once through `lang/vendor/filament-*` overrides rather than per action. **C**; the verb choice is **P** ("Create" is more common in current SaaS, "Add" is also fine).
 
-## 4. No placeholders as hints
-Examples go in `helperText()` as one short "Such as …" fragment; never "e.g.", "i.e." or "etc". **C** (GOV.UK, NN/g). Placeholder hints are common in current apps; the guidance is better supported.
+## 4. No placeholders as hints; shape the input before showing an example
+A value with a fixed shape (a phone number, a tax number, a code) gets an input mask that writes it as it is typed and refuses what can't belong (`inputs.md` rule 6), and no example text. Where no mask can shape the answer, an example goes in `helperText()` as one short "Such as …" fragment; never "e.g.", "i.e." or "etc". **C** (GOV.UK, NN/g). Placeholder hints are common in current apps; the guidance is better supported. Preferring a mask to an example is **P**.
 
 ## 5. Helper text is one short line
-A one-line format example with no full stop, only where the label isn't enough, never repeating a prefix or suffix (rule 15). **C** (GOV.UK, NN/g).
+A one-line format example with no full stop, only where the label isn't enough and no mask can shape the input, never repeating a prefix or suffix (rule 15). **C** (GOV.UK, NN/g).
 
 ## 6. Errors say what to do
 "Enter [field]", "Select [field]" or "[Field] must be …", using the field's own label; name and link any conflicting record; keep what people typed when a custom action refuses to save. Never "invalid", "incorrect", "illegal", "forbidden", "sorry", "is required", or "please" in a field error; "please" only when the system is at fault. **C** (GOV.UK, NN/g, Microsoft). "Please enter a valid …" is common in current apps; the guidance is better supported.
@@ -45,7 +45,7 @@ Turn on `unsavedChangesAlerts()`. On long edit pages, show that there are unsave
 A column or entry with no value shows `->placeholder('—')`, or a word that means something ("Never", "Not set") where a dash would be ambiguous, so an empty cell never looks like a loading or broken one. **P**.
 
 ## 15. Prose only where the screen can't show it
-Text appears in empty states (the next step), in confirmations of losses (the consequence), in one-line format examples as `helperText()`, and as the visible reason for a disabled action (rule 7) or a suggestion (`ai-suggestions.md` rule 4). Everything else is shown, not stated: no Section descriptions, page subheadings or hints, and no helper text or description that explains what a label, badge, grouping or order can show. Replace such a sentence with a better label, grouping or badge. A money Figure keeps its working as one caption line of data (rule 11). **P** (NN/g heuristic 8).
+Text appears in empty states (the next step), in confirmations of losses (the consequence), in one-line format examples as `helperText()` where no mask can shape the input, and as the visible reason for a disabled action (rule 7) or a suggestion (`ai-suggestions.md` rule 4). Everything else is shown, not stated: no Section descriptions, page subheadings or hints, and no helper text or description that explains what a label, badge, grouping or order can show. Replace such a sentence with a better label, grouping or badge. A money Figure keeps its working as one caption line of data (rule 11). **P** (NN/g heuristic 8).
 
 ## 16. One mark per fact
 Each fact appears once on a screen, in its strongest form: a badge over a sentence, an icon over a word when the icon is unambiguous. A status shown as a badge carries no sentence restating it, and the Identity bar's status isn't repeated in the Details aside. **P** (NN/g heuristic 8).
