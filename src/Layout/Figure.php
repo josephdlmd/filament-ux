@@ -15,7 +15,8 @@ use Filament\Support\Enums\TextSize;
  * caption(), such as "ex-VAT · 3 offers · 1 VAT unknown", never a sentence.
  *
  * Filament aligns an entry's label to the start, so the label stays the entry's term for screen readers and a copy is
- * shown above the value, at the end, with Filament's own slots and no CSS.
+ * shown above the value, at the end, with Filament's own slots and no CSS. The type scale is the Details aside's: a
+ * gray regular-weight label over the value in the text colour, and a caption smaller and gray.
  */
 class Figure extends TextEntry
 {
@@ -30,14 +31,14 @@ class Figure extends TextEntry
             ->hiddenLabel()
             ->aboveContent(fn (Figure $component): Schema => Schema::end([
                 Text::make($component->getLabel())
-                    ->weight(FontWeight::Medium)
-                    ->color('neutral'),
+                    ->color('gray'),
             ]));
     }
 
     /**
      * The Figure's one caption line of data under its value, aligned with it; none when the caption is null or empty.
-     * Plain text is set end-aligned too (Tailwind's `text-end`), so a caption that wraps still lines up with the value.
+     * Plain text is set end-aligned too (Tailwind's `text-end`), so a caption that wraps still lines up with the value,
+     * and small and gray, quieter than the value it explains.
      *
      * @param  string|array<int, mixed>|Closure|null  $caption  text, prime components such as a badge, or a closure giving either
      */
@@ -51,7 +52,9 @@ class Figure extends TextEntry
             }
 
             return Schema::end(array_map(
-                fn (mixed $part): mixed => is_string($part) ? Text::make($part)->extraAttributes(['class' => 'text-end']) : $part,
+                fn (mixed $part): mixed => is_string($part)
+                    ? Text::make($part)->color('gray')->size(TextSize::ExtraSmall)->extraAttributes(['class' => 'text-end'])
+                    : $part,
                 is_array($content) ? $content : [$content],
             ));
         });
