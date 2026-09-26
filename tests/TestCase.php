@@ -71,6 +71,19 @@ abstract class TestCase extends Orchestra
             $table->string('code');
             $table->string('name');
             $table->string('status');
+            $table->string('mobile')->nullable();
+            $table->string('landline')->nullable();
+            $table->string('email')->nullable();
+            $table->text('address')->nullable();
+            $table->string('country')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('parts', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('gadget_id')->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

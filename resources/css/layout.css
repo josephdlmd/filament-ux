@@ -1,12 +1,39 @@
 /*
- * The record page template's one custom rule: the Details aside stays in view while the Main column scrolls. Filament
- * wraps each grid item in `.fi-grid-col > .fi-sc-component`, so the grid item, not the Section, is made sticky.
+ * The record page template's CSS, and the two list and form rules that Filament has no setting for.
  */
 @source '../views';
 @source '../../src';
 
+/* The Details aside stays in view while the Main column scrolls. Filament wraps each grid item in
+ * `.fi-grid-col > .fi-sc-component`, so the grid item, not the Section, is made sticky. */
 .fi-grid-col:has(> .fi-sc-component > .fux-details-aside) {
     position: sticky;
     top: calc(var(--topbar-height, 4rem) + 1rem);
     align-self: start;
+}
+
+/* A table's toolbar reads search, the filter and the column toggle on the left, and a list's own actions (Add, a
+ * view choice) at the right end of the same row. Filament puts toolbar actions first and pushes the search group
+ * right, so the actions are moved last and take the free space instead. */
+.fi-ta-ctn .fi-ta-header-toolbar {
+    & > .fi-ta-actions {
+        order: 1;
+        margin-inline-start: auto;
+    }
+
+    & > :nth-child(2) {
+        margin-inline-start: 0;
+    }
+}
+
+/* A form with inline labels keeps each label close to its field: a label column just wide enough for a two-word
+ * label, not a third of the form. */
+.fi-fo-field.fi-fo-field-has-inline-label {
+    @media (width >= 40rem) {
+        grid-template-columns: 9rem minmax(0, 1fr);
+
+        & .fi-fo-field-content-col {
+            grid-column: auto;
+        }
+    }
 }

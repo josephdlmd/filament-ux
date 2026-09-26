@@ -10,6 +10,13 @@ class GadgetResource extends Resource
 {
     protected static ?string $model = Gadget::class;
 
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\PartsRelationManager::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [

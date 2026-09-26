@@ -40,7 +40,7 @@ How to lay out an information-dense business tool with native Filament component
 19. **Read-only grids widen with the screen.** Infolists: 1 column, 2 from `lg`, 3 from `2xl` (`columns(['default' => 1, 'lg' => 2, '2xl' => 3])`). Only short, related fields share a row. **C** (Carbon, Fluent grids).
 20. **Forms are one column with no boxed Sections.** Only short, related inputs share a row (City · Postcode), and a heading appears only between genuinely different groups of fields. **C** (NN/g forms, GOV.UK).
 21. **Same fields, same order, everywhere.** Create, Edit and View build from shared schema methods in one order. **S** (NN/g heuristic 4).
-22. **Inline labels only in the read-only details aside** (`inlineLabel()` on entries). Forms keep labels above their fields. **C** (NN/g forms, Pajamas).
+22. **Inline labels in the details aside, and in a slide-over form that mirrors it** (`page-templates.md` rules 12 and 13), with a narrow label column so each label stays close to its field. Elsewhere forms keep labels above their fields. **C** (NN/g forms, Pajamas).
 
 ## Tables
 
