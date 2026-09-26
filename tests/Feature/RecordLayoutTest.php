@@ -18,6 +18,7 @@ use function Pest\Laravel\get;
 
 beforeEach(function () {
     ViewGadget::$figureCount = 3;
+    ViewGadget::$hiddenFigures = 0;
     actingAs(User::query()->create(['name' => 'Ana', 'email' => 'ana@example.com', 'password' => 'secret']));
 });
 
@@ -59,6 +60,27 @@ it('starts the Identity bar with the name when the record has no identifier', fu
 
     expect($html)->toContain('Acme Trading', 'VAT unknown')
         ->and(substr_count($html, 'text-gray-500'))->toBe(0);
+});
+
+it('fills the Figures strip with as many columns as the viewer can see, never fewer than 3', function (int $declared, int $hidden, int $columns) {
+    ViewGadget::$figureCount = $declared;
+    ViewGadget::$hiddenFigures = $hidden;
+
+    get(GadgetResource::getUrl('view', ['record' => gadget()]))
+        ->assertOk()
+        ->assertSee("--cols-lg: repeat({$columns}, minmax(0, 1fr))", false);
+})->with([
+    'five seen' => [5, 0, 5],
+    'four of five seen' => [5, 1, 4],
+    'one of four seen' => [4, 3, 3],
+]);
+
+it('shows a Figure\'s label, value and caption aligned to the end, the label still read as the entry\'s term', function () {
+    $html = get(GadgetResource::getUrl('view', ['record' => gadget()]))->getContent();
+
+    expect($html)->toMatch('/fi-sr-only"\s+role="term">\s*Stock figure/')
+        ->and(substr_count($html, 'fi-align-end'))->toBeGreaterThanOrEqual(3)
+        ->and($html)->toContain('ex-VAT · 3 offers');
 });
 
 it('names the record as it is after an action changes it, in the same request', function () {

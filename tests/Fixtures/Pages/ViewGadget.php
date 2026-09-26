@@ -22,6 +22,11 @@ class ViewGadget extends ViewRecord
      */
     public static int $figureCount = 3;
 
+    /**
+     * How many of the declared Figures are hidden from the viewer.
+     */
+    public static int $hiddenFigures = 0;
+
     protected function getHeaderActions(): array
     {
         return [
@@ -34,14 +39,18 @@ class ViewGadget extends ViewRecord
     {
         return $layout
             ->identity(IdentityBar::make($this->record->code, $this->record->name)->status(ucfirst($this->record->status), 'success'))
-            ->figures(array_slice([
-                Figure::make('stock')->label('Stock figure')->state(12),
+            ->figures(array_map(
+                fn (Figure $figure, int $index): Figure => $figure->visible($index >= self::$hiddenFigures),
+                $figures = array_slice([
+                Figure::make('stock')->label('Stock figure')->state(12)->caption('ex-VAT · 3 offers'),
                 Figure::make('reorder')->label('Reorder figure')->state(4),
                 Figure::make('lead')->label('Lead time figure')->state('3 days'),
                 Figure::make('shelf')->label('Shelf figure')->state('A2'),
                 Figure::make('batch')->label('Batch figure')->state('B-17'),
                 Figure::make('supplier')->label('Supplier figure')->state('Acme'),
-            ], 0, self::$figureCount))
+            ], 0, self::$figureCount),
+                array_keys($figures),
+            ))
             ->main([
                 TextEntry::make('notes')->label('Main notes')->state('Handle with care'),
             ])

@@ -2,22 +2,50 @@
 
 namespace Josephdlmd\FilamentUx\Layout;
 
+use Closure;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Text;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
 
 /**
- * One Figure in a record page's Figures strip: a label over a large, right-aligned value. Its working, when it needs
- * any, is at most one caption line of data given with `belowContent()`, such as "ex-VAT · 3 offers · 1 VAT unknown",
- * never a sentence.
+ * One Figure in a record page's Figures strip: a label over a large value, both aligned to the end so they read as
+ * one unit and numbers line up. Its working, when it needs any, is at most one caption line of data given with
+ * caption(), such as "ex-VAT · 3 offers · 1 VAT unknown", never a sentence.
+ *
+ * Filament aligns an entry's label to the start, so the label stays the entry's term for screen readers and a copy is
+ * shown above the value, at the end, with Filament's own slots and no CSS.
  */
-final class Figure
+class Figure extends TextEntry
 {
-    public static function make(string $name): TextEntry
+    protected function setUp(): void
     {
-        return TextEntry::make($name)
+        parent::setUp();
+
+        $this
             ->size(TextSize::Large)
             ->weight(FontWeight::SemiBold)
-            ->alignEnd();
+            ->alignEnd()
+            ->hiddenLabel()
+            ->aboveContent(fn (Figure $component): Schema => Schema::end([
+                Text::make($component->getLabel())
+                    ->weight(FontWeight::Medium)
+                    ->color('neutral'),
+            ]));
+    }
+
+    /**
+     * The Figure's one caption line of data under its value, aligned with it; none when the caption is null or empty.
+     *
+     * @param  string|array<int, mixed>|Closure|null  $caption  text, prime components such as a badge, or a closure giving either
+     */
+    public function caption(string|array|Closure|null $caption): static
+    {
+        return $this->belowContent(function (Figure $component) use ($caption): ?Schema {
+            $content = $component->evaluate($caption);
+
+            return blank($content) ? null : Schema::end(is_array($content) ? $content : [$content]);
+        });
     }
 }

@@ -7,8 +7,8 @@ use Filament\Schemas\Components\Grid;
 use InvalidArgumentException;
 
 /**
- * The row of 3 to 5 Figures under the Identity bar. The grid always has five columns from `lg`, so a Figure is the same
- * width on every record page; a Figure hidden from a viewer is left out and the others close up. A page with more
+ * The row of 3 to 5 Figures under the Identity bar. From `lg` the row has as many columns as Figures the viewer can see,
+ * never fewer than 3, so it is always full and a lone Figure keeps a normal width. A page with more
  * candidate figures moves the less important ones into the Details aside, and one with fewer than 3 has no strip; a
  * strip given fewer than 3 or more than 5 is refused.
  */
@@ -34,7 +34,11 @@ final class FiguresStrip
             ));
         }
 
-        return Grid::make(['default' => 2, 'lg' => self::MAX_FIGURES])
+        return Grid::make()
+            ->columns(fn (Grid $component): array => [
+                'default' => 2,
+                'lg' => max(self::MIN_FIGURES, count($component->getChildSchema()->getComponents())),
+            ])
             ->schema($figures);
     }
 }
