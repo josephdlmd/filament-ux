@@ -87,7 +87,9 @@ final class ContactEntry
     }
 
     /**
-     * A phone number as people read it ("+63 917 123 4567"); as stored when it can't be read, null when blank.
+     * A phone number as people read and say it: one in the region in its national form ("0917 123 4567",
+     * "(02) 8123 4567"), as an input mask for the region writes it; one abroad in international form
+     * ("+86 138 0013 8000"). As stored when it can't be read, null when blank.
      */
     public static function readable(?string $number, string $region = 'PH'): ?string
     {
@@ -96,7 +98,9 @@ final class ContactEntry
         }
 
         try {
-            return (new PhoneNumber($number, $region))->formatInternational();
+            $phoneNumber = new PhoneNumber($number, $region);
+
+            return $phoneNumber->isOfCountry($region) ? $phoneNumber->formatNational() : $phoneNumber->formatInternational();
         } catch (NumberParseException) {
             return $number;
         }

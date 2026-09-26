@@ -44,7 +44,7 @@ it('makes contact details usable: Call and Viber on a mobile, Call on a landline
         'email' => 'sales@example.com',
         'address' => '331 Rizal Ave Ext, Caloocan',
         'country' => 'Philippines',
-    ])]))->assertSeeTextInOrder(['+63 917 123 4567', 'Call', 'Viber', '+63 2 8123 4567', 'Call', 'sales@example.com', '331 Rizal Ave Ext, Caloocan', 'Google Maps', 'Waze']);
+    ])]))->assertSeeTextInOrder(['0917 123 4567', 'Call', 'Viber', '(02) 8123 4567', 'Call', 'sales@example.com', '331 Rizal Ave Ext, Caloocan', 'Google Maps', 'Waze']);
 
     foreach (['href="tel:+639171234567"', 'href="viber://chat?number=%2B639171234567"', 'href="tel:+63281234567"', 'href="mailto:sales@example.com"', "href=\"https://www.google.com/maps/search/?api=1&amp;query={$place}\"", "href=\"https://waze.com/ul?q={$place}&amp;navigate=yes\""] as $link) {
         $page->assertSee($link, false);
@@ -57,8 +57,10 @@ it('offers no contact link for a detail that is missing, and reads it as a dash'
         ->assertDontSee(['tel:', 'viber://', 'mailto:', 'google.com/maps', 'waze.com'], false);
 });
 
-it('reads a phone number in international form, and one it cannot read as stored', function () {
+it('stores a phone number in international form, and reads one in the region in national form, one abroad in international form, and one it cannot read as stored', function () {
     expect(ContactEntry::e164('0917 123 4567'))->toBe('+639171234567')
+        ->and(ContactEntry::readable('+639171234567'))->toBe('0917 123 4567')
+        ->and(ContactEntry::readable('+63281234567'))->toBe('(02) 8123 4567')
         ->and(ContactEntry::readable('+8613800138000'))->toBe('+86 138 0013 8000')
         ->and(ContactEntry::readable('call the office'))->toBe('call the office')
         ->and(ContactEntry::e164('call the office'))->toBeNull();
