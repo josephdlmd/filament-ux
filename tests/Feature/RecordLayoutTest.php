@@ -80,7 +80,7 @@ it('shows a Figure\'s label, value and caption aligned to the end, the label sti
 
     expect($html)->toMatch('/fi-sr-only"\s+role="term">\s*Stock figure/')
         ->and(substr_count($html, 'fi-align-end'))->toBeGreaterThanOrEqual(3)
-        ->and($html)->toContain('ex-VAT · 3 offers');
+        ->and($html)->toMatch('/class="(?=[^"]*\btext-end\b)(?=[^"]*\bfi-sc-text\b)[^"]*"[^>]*>\s*ex-VAT · 3 offers/');
 });
 
 it('names the record as it is after an action changes it, in the same request', function () {

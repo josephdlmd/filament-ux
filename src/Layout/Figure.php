@@ -37,6 +37,7 @@ class Figure extends TextEntry
 
     /**
      * The Figure's one caption line of data under its value, aligned with it; none when the caption is null or empty.
+     * Plain text is set end-aligned too (Tailwind's `text-end`), so a caption that wraps still lines up with the value.
      *
      * @param  string|array<int, mixed>|Closure|null  $caption  text, prime components such as a badge, or a closure giving either
      */
@@ -45,7 +46,14 @@ class Figure extends TextEntry
         return $this->belowContent(function (Figure $component) use ($caption): ?Schema {
             $content = $component->evaluate($caption);
 
-            return blank($content) ? null : Schema::end(is_array($content) ? $content : [$content]);
+            if (blank($content)) {
+                return null;
+            }
+
+            return Schema::end(array_map(
+                fn (mixed $part): mixed => is_string($part) ? Text::make($part)->extraAttributes(['class' => 'text-end']) : $part,
+                is_array($content) ? $content : [$content],
+            ));
         });
     }
 }
