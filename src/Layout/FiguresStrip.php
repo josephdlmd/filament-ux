@@ -3,14 +3,15 @@
 namespace Josephdlmd\FilamentUx\Layout;
 
 use Filament\Schemas\Components\Component;
-use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Flex;
 use InvalidArgumentException;
 
 /**
- * The row of 3 to 5 Figures under the Identity bar. From `lg` the row has as many columns as Figures the viewer can see,
- * never fewer than 3, so it is always full and a lone Figure keeps a normal width. A page with more
- * candidate figures moves the less important ones into the Details aside, and one with fewer than 3 has no strip; a
- * strip given fewer than 3 or more than 5 is refused.
+ * The row of 3 to 5 Figures under the Identity bar, packed together from the start of the page, each only as wide as
+ * its label or value, with a fixed gap between them (`layout.css`), so a few short numbers read as one group instead of
+ * floating across the page. The row wraps on a narrow screen. A page with more candidate figures moves the less
+ * important ones into the Details aside, and one with fewer than 3 has no strip; a strip given fewer than 3 or more
+ * than 5 is refused.
  */
 final class FiguresStrip
 {
@@ -18,10 +19,12 @@ final class FiguresStrip
 
     public const int MAX_FIGURES = 5;
 
+    public const string CSS_CLASS = 'fux-figures-strip';
+
     /**
      * @param  list<Component>  $figures
      */
-    public static function make(array $figures): Grid
+    public static function make(array $figures): Flex
     {
         $count = count($figures);
 
@@ -34,11 +37,7 @@ final class FiguresStrip
             ));
         }
 
-        return Grid::make()
-            ->columns(fn (Grid $component): array => [
-                'default' => 2,
-                'lg' => max(self::MIN_FIGURES, count($component->getChildSchema()->getComponents())),
-            ])
-            ->schema($figures);
+        return Flex::make($figures)
+            ->extraAttributes(['class' => self::CSS_CLASS]);
     }
 }

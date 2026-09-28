@@ -11,7 +11,7 @@ use Filament\Support\Enums\TextSize;
 
 /**
  * One Figure in a record page's Figures strip: a label over a large value, both aligned to the end so they read as
- * one unit and numbers line up. Its working, when it needs any, is at most one caption line of data given with
+ * one unit and numbers line up, only as wide as the wider of the two, so the strip packs its Figures together. Its working, when it needs any, is at most one caption line of data given with
  * caption(), such as "ex-VAT · 3 offers · 1 VAT unknown", never a sentence.
  *
  * Filament aligns an entry's label to the start, so the label stays the entry's term for screen readers and a copy is
@@ -28,6 +28,7 @@ class Figure extends TextEntry
             ->size(TextSize::Large)
             ->weight(FontWeight::SemiBold)
             ->alignEnd()
+            ->grow(false)
             ->hiddenLabel()
             ->aboveContent(fn (Figure $component): Schema => Schema::end([
                 Text::make($component->getLabel())

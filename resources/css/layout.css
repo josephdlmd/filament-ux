@@ -12,6 +12,15 @@
     align-self: start;
 }
 
+/* The Figures strip packs its Figures together from the start, each as wide as its label or value, with a gap wide
+ * enough that each Figure's end-aligned label and value read as one unit apart from the next. It wraps on a narrow
+ * screen. */
+.fi-sc-flex.fux-figures-strip {
+    flex-wrap: wrap;
+    column-gap: 3rem;
+    row-gap: 1rem;
+}
+
 /* A table's toolbar reads search, the filter and the column toggle on the left, and a list's own actions (Add, a
  * view choice) at the right end of the same row. Filament puts toolbar actions first and pushes the search group
  * right, so the actions are moved last and take the free space instead. */

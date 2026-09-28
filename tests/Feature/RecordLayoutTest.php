@@ -63,17 +63,19 @@ it('starts the Identity bar with the name when the record has no identifier', fu
         ->and(substr_count($html, 'text-gray-500'))->toBe(0);
 });
 
-it('fills the Figures strip with as many columns as the viewer can see, never fewer than 3', function (int $declared, int $hidden, int $columns) {
+it('packs the Figures strip\'s Figures together from the start, each at its own width, leaving out those the viewer cannot see', function (int $declared, int $hidden) {
     ViewGadget::$figureCount = $declared;
     ViewGadget::$hiddenFigures = $hidden;
 
-    get(GadgetResource::getUrl('view', ['record' => gadget()]))
-        ->assertOk()
-        ->assertSee("--cols-lg: repeat({$columns}, minmax(0, 1fr))", false);
+    $html = get(GadgetResource::getUrl('view', ['record' => gadget()]))->assertOk()->getContent();
+
+    expect($html)->toMatch('/class="[^"]*\\bfi-sc-flex\\b[^"]*\\bfux-figures-strip\\b[^"]*"|class="[^"]*\\bfux-figures-strip\\b[^"]*\\bfi-sc-flex\\b[^"]*"/')
+        ->and(substr_count($html, 'fi-growable'))->toBe(0)
+        ->and(substr_count($html, 'role="term">'))->toBeGreaterThanOrEqual($declared - $hidden);
 })->with([
-    'five seen' => [5, 0, 5],
-    'four of five seen' => [5, 1, 4],
-    'one of four seen' => [4, 3, 3],
+    'five seen' => [5, 0],
+    'four of five seen' => [5, 1],
+    'three seen' => [3, 0],
 ]);
 
 it('shows a Figure\'s label, value and caption aligned to the end, the label still read as the entry\'s term', function () {
