@@ -6,6 +6,7 @@ use Filament\Actions\Testing\TestAction;
 use Josephdlmd\FilamentUx\Entries\ContactEntry;
 use Josephdlmd\FilamentUx\Tests\Fixtures\Gadget;
 use Josephdlmd\FilamentUx\Tests\Fixtures\GadgetResource;
+use Josephdlmd\FilamentUx\Tests\Fixtures\Pages\ListGadgets;
 use Josephdlmd\FilamentUx\Tests\Fixtures\Pages\ViewGadget;
 use Josephdlmd\FilamentUx\Tests\Fixtures\RelationManagers\PartsRelationManager;
 use Josephdlmd\FilamentUx\Tests\Fixtures\User;
@@ -84,4 +85,31 @@ it('puts a Related list\'s tabs on its search row as one button group labelled w
         ->assertCanSeeTableRecords([$kept])
         ->assertCanNotSeeTableRecords([$retired])
         ->assertActionHasColor(TestAction::make('showActive')->table(), 'primary');
+});
+
+it('puts a List page\'s tabs on its search row, leaving out a tab with nothing waiting unless it is open', function () {
+    $toCheck = contactGadget(['name' => 'Unchecked gadget', 'status' => 'to_check']);
+    $active = contactGadget(['name' => 'Working gadget']);
+
+    Livewire::test(ListGadgets::class)
+        ->assertDontSeeHtml('fi-tabs')
+        ->assertActionVisible(TestAction::make('showAll')->table())
+        ->assertActionVisible(TestAction::make('showToCheck')->table())
+        ->assertActionHidden(TestAction::make('showToRetire')->table())
+        ->callAction(TestAction::make('showToCheck')->table())
+        ->assertCanSeeTableRecords([$toCheck])
+        ->assertCanNotSeeTableRecords([$active]);
+
+    Livewire::withQueryParams(['tab' => 'to_retire'])
+        ->test(ListGadgets::class)
+        ->assertActionVisible(TestAction::make('showToRetire')->table())
+        ->assertCanNotSeeTableRecords([$toCheck, $active]);
+});
+
+it('leaves out the view choice when nothing is waiting, as one tab is no choice', function () {
+    contactGadget();
+
+    Livewire::test(ListGadgets::class)
+        ->assertActionHidden(TestAction::make('showAll')->table())
+        ->assertDontSee('To check');
 });

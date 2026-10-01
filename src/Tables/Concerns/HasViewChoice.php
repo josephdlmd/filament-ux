@@ -4,32 +4,26 @@ namespace Josephdlmd\FilamentUx\Tables\Concerns;
 
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use Filament\Schemas\Components\EmbeddedTable;
-use Filament\Schemas\Components\RenderHook;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
-use Filament\Schemas\Schema;
-use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Str;
 
 /**
- * For a relation manager with tabs, such as All, Active and Stale: the tabs become one button group on the list's
- * search row (put viewChoice() in the table's toolbarActions()), each labelled with its count ("Stale 8"; a button's
- * badge is a corner dot too small to read), the chosen one primary, instead of a row of tabs above the list. Choosing
- * one filters the list as its tab would.
+ * For a List page or a relation manager with tabs, such as All, Active and Stale: the tabs become one button group on
+ * the list's search row (put viewChoice() in the table's toolbarActions()), each labelled with its count ("Stale 8";
+ * a button's badge is a corner dot too small to read), the chosen one primary, instead of a row of tabs above the
+ * list. Choosing one filters the list as its tab would. A tab counting 0 has no work waiting and is left out, unless
+ * it is the one open; with one tab left there is nothing to choose, and the group is left out too.
  */
 trait HasViewChoice
 {
     /**
-     * The list alone, without the tabs row: the choice is on its search row.
+     * No tabs row: the choice is on the search row. The tabs stay defined, so a tab named in the URL still opens.
      */
-    public function content(Schema $schema): Schema
+    public function getTabsContentComponent(): Component
     {
-        return $schema
-            ->components([
-                RenderHook::make(PanelsRenderHook::RESOURCE_RELATION_MANAGER_BEFORE),
-                EmbeddedTable::make(),
-                RenderHook::make(PanelsRenderHook::RESOURCE_RELATION_MANAGER_AFTER),
-            ]);
+        return Tabs::make()->key('resourceTabs')->hidden();
     }
 
     /**
@@ -37,16 +31,22 @@ trait HasViewChoice
      */
     protected function viewChoice(): ActionGroup
     {
-        return ActionGroup::make(collect($this->getCachedTabs())
-            ->map(fn (Tab $tab, string $key): Action => Action::make('show'.Str::studly($key))
-                ->label(trim("{$tab->getLabel()} {$tab->getBadge()}"))
+        $counts = collect($this->getCachedTabs())->map(fn (Tab $tab): string => (string) $tab->getBadge());
+
+        $isShown = fn (string $key): bool => $this->activeTab === $key || $counts[$key] !== '0';
+
+        return ActionGroup::make($counts
+            ->map(fn (string $count, string $key): Action => Action::make('show'.Str::studly($key))
+                ->label(trim("{$this->getCachedTabs()[$key]->getLabel()} {$count}"))
                 ->color(fn (): string => $this->activeTab === $key ? 'primary' : 'gray')
+                ->visible(fn (): bool => $isShown($key))
                 ->action(function () use ($key): void {
                     $this->activeTab = $key;
                     $this->updatedActiveTab();
                 }))
             ->values()
             ->all())
-            ->buttonGroup();
+            ->buttonGroup()
+            ->visible(fn (): bool => $counts->keys()->filter($isShown)->count() > 1);
     }
 }
