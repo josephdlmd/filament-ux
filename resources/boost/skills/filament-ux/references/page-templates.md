@@ -1,14 +1,27 @@
 # Page templates
 
-Every screen in the panel is one of three templates: a **Record page**, a **List page** or a **Manage page**. Each reads as one designed screen rather than a stack of components, and two apps built on them feel the same. The Record page is assembled with this package's building blocks (`Josephdlmd\FilamentUx\Layout`), which use only Filament's own schema components, page methods and design tokens, so they look right under any theme. Tags **C**, **S**, **P** as defined in `SKILL.md`; the templates are **P** throughout, built on the **C** rules they cite.
+Every screen in the panel has an **intent**, the job it does for each role that reaches it, and is built on the template that expresses that intent best: a **Record page**, a **List page** or a **Manage page**, and for the two jobs those don't fit, a **Dashboard page** or a **Settings page**. Each reads as one designed screen rather than a stack of components, and two apps built on them feel the same. The Record page is assembled with this package's building blocks (`Josephdlmd\FilamentUx\Layout`), which use only Filament's own schema components, page methods and design tokens, so they look right under any theme. Tags **C**, **S**, **P** as defined in `SKILL.md`; the templates are **P** throughout, built on the **C** rules they cite.
 
-Vocabulary, used in code, docs and reviews: **Record page**, **List page**, **Manage page**, **Identity bar**, **Figures strip**, **Figure**, **Main column**, **Details aside**, **Related list**. It is layout vocabulary: keep it out of the app's domain glossary.
+Vocabulary, used in code, docs and reviews: the intents **Work queue**, **Workbench**, **Directory** and **Reference**; the templates **Record page**, **List page**, **Manage page**, **Dashboard page** and **Settings page**; and **Identity bar**, **Figures strip**, **Figure**, **Main column**, **Details aside**, **Related list**. It is layout vocabulary: keep it out of the app's domain glossary, and keep the app's table of screens and their intents in its own layout rules.
+
+## Naming the intent
+
+Name a screen's intent before picking its template, and per role where roles come to it for different jobs (the same Product page is Purchasing's Workbench and Sales' place to quote from). The intent, not the data the screen happens to hold, decides what opens first, whether it has tabs and counts, what its primary action is, and where each role lands. **P**.
+
+- **Work queue**: finding the next thing to do. Status tabs, each counting the work waiting in it, rows in the order the work should be done, the most common task as the one inline row action. A count means work is waiting: a tab that is only a view (All, Active, Closed, a category of records) carries no count, so a number on a tab always draws the eye to work.
+- **Workbench**: acting on one record. Its primary action is the work, and its Main column holds that work for every role that reaches it. Show a fact only where that viewer acts on it there (decides, acts or finds with it); an occasional look-up goes to the Details aside. When a role sees nothing in the Main column, move what that role works with (its photos, its description) there rather than leave the column empty.
+- **Directory**: finding a record and looking it up. Search first, the row opening the record, no counted tabs; its Record pages are mostly a Related list beside the Details aside, with no Figures unless three or more are worth a strip.
+- **Reference**: keeping the short lists and values other screens read. Rarely visited, by an admin.
+
+A role lands where its daily trigger starts: on the search that finds what just arrived (a quote to record) rather than the first to-do, when finding is how the day's work begins.
 
 ## Choosing a template
 
-1. **A record with figures or related records gets a Record page;** its resource's list is a List page. A `ViewRecord` built with `RecordLayout::make()` (below). **P**.
-2. **A flat reference list gets a Manage page.** A few short fields, no uploads, no related records: one `ManageRecords` list where the row opens the Edit slide-over and Add opens a slide-over, with no Create, Edit or View page. **P** (`layout-and-density.md` rule 9).
-3. **Pages extend Filament's own classes** (`ViewRecord`, `ListRecords`, `ManageRecords`); the templates add no base classes. **P**.
+1. **A record with figures or related records gets a Record page;** its resource's list is a List page. A `ViewRecord` built with `RecordLayout::make()` (below). A Workbench or a Directory record. **P**.
+2. **A flat reference list gets a Manage page.** A few short fields, no uploads, no related records: one `ManageRecords` list where the row opens the Edit slide-over and Add opens a slide-over, with no Create, Edit or View page. A Reference list. **P** (`layout-and-density.md` rule 9).
+3. **Pages extend Filament's own classes** (`ViewRecord`, `ListRecords`, `ManageRecords`, `Dashboard`, `SettingsPage`); the templates add no base classes. **P**.
+3a. **Pick by intent, then check the fit.** Work queue: a List page with counted status tabs, or a Dashboard page whose counts each open one of those tabs. Workbench: a Record page. Directory: a List page and its Record pages. Reference: a Manage page, or a Settings page for a handful of app-wide values. A screen that fits none of these is a new template only when no existing one can carry its intent: name it, state its rules beside these, and record which screens use it. **P**.
+3b. **Every screen is reached.** A screen that nothing links to and no top-bar item opens is removed, or linked from where its intent is needed; a page nobody reaches still costs upkeep on every change. **P**.
 
 ## Record page
 
@@ -27,9 +40,14 @@ The page, top to bottom: the **Identity bar** as the page heading, the **Figures
 
 ## List page and Manage page
 
-9. **A List page starts with the work.** No heading: `getHeading()` returns null, since the active navigation item names the page. Status tabs with counts come first, then one toolbar row, search, the filter dropdown and the column toggle on the left and the primary action at its right end, then the rows. Put the primary action in the table's `toolbarActions()`, which the package CSS moves to the right end of that row: `getHeaderActions()` and the table's `headerActions()` each add a row above the toolbar. Show a column toggle only where a column is worth hiding; decide what a list shows rather than leave it to each viewer. Filters stay in Filament's default dropdown. Every List page has 25 rows per page and both empty states. **P** (`tables-and-finding.md` rules 3 and 6, `layout-and-density.md` rules 23 and 24, `copy-and-feedback.md` rule 10).
+9. **A List page starts with the work.** No heading: `getHeading()` returns null, since the active navigation item names the page. Status tabs come first, counted where they are work (rule 3a, Work queue), then one toolbar row, search, the filter dropdown and the column toggle on the left and the primary action at its right end, then the rows. Put the primary action in the table's `toolbarActions()`, which the package CSS moves to the right end of that row: `getHeaderActions()` and the table's `headerActions()` each add a row above the toolbar. Show a column toggle only where a column is worth hiding; decide what a list shows rather than leave it to each viewer. Filters stay in Filament's default dropdown. Every List page has 25 rows per page and both empty states. **P** (`tables-and-finding.md` rules 3 and 6, `layout-and-density.md` rules 23 and 24, `copy-and-feedback.md` rule 10).
 10. **A Manage page is a List page whose row opens the Edit slide-over.** Keep `edit` in `recordActions()` and set no `recordUrl()`, so the row click opens it. Add opens in a slide-over too. **P**.
-11. **A dashboard follows the List page:** no heading and a flat surface. **P**.
+11. **A Dashboard page follows the List page:** no heading and a flat surface. It is a Work queue's front door: each count names one kind of work waiting for the viewer and opens the List page tab that holds it, and work the viewer doesn't act on has no count there. **P**.
+11a. **A Settings page is one form of app-wide values.** A Filament `SettingsPage` with no heading, one column of inline labels in the order the values are read, Save under them: for a handful of single values (a tax rate, a default margin) rather than a list of records, which is a Manage page. **P**.
+
+## Auditing screens by intent
+
+To align an app's screens, or check a new one: list every screen a user can reach (and the slide-overs that act like one) with who reaches it; name its intent per role; check its template fits that intent (rule 3a); check it against its template's rules; then look at it as each role that reaches it, asking whether that role finds its work first. Fix rule slips as the rules say, and where a slip shows the rule is wrong, change the rule instead. Move and relabel before adding: a new element needs a stated case. **P**.
 
 ## Forms
 
