@@ -23,8 +23,12 @@
 
 /* A table's toolbar reads search, the filter and the column toggle on the left, and a list's own actions (Add, a
  * view choice) at the right end of the same row. Filament puts toolbar actions first and pushes the search group
- * right, so the actions are moved last and take the free space instead. */
+ * right, so the actions are moved last and take the free space instead. Keyboard focus follows that visual order
+ * too (reading-flow), so Tab reaches the search before the actions beside it (WCAG 2.4.3); a browser without
+ * reading-flow keeps the source order. */
 .fi-ta-ctn .fi-ta-header-toolbar {
+    reading-flow: flex-visual;
+
     & > .fi-ta-actions {
         order: 1;
         margin-inline-start: auto;
