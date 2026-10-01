@@ -4,8 +4,6 @@ namespace Josephdlmd\FilamentUx\Tests\Fixtures\Pages;
 
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Josephdlmd\FilamentUx\Tables\Concerns\HasViewChoice;
 use Josephdlmd\FilamentUx\Tests\Fixtures\Gadget;
@@ -28,12 +26,5 @@ class ListGadgets extends ListRecords
                 ->badge(fn (): int => Gadget::query()->where('status', 'to_retire')->count())
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query->where('status', 'to_retire')),
         ];
-    }
-
-    public function table(Table $table): Table
-    {
-        return $table
-            ->columns([TextColumn::make('name')])
-            ->toolbarActions([$this->viewChoice()]);
     }
 }
