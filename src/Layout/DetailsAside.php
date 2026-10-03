@@ -24,7 +24,7 @@ final class DetailsAside
     public static function make(array $components, array $actions = []): Section
     {
         return Section::make()
-            ->key('details::section')
+            ->key('details::section', isInheritable: false)
             ->headerActions($actions)
             ->compact()
             ->inlineLabel()

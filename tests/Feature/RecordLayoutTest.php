@@ -87,12 +87,13 @@ it('shows a Figure\'s label, value and caption aligned to the end, the label sti
         ->and($html)->toMatch('/class="(?=[^"]*\btext-end\b)(?=[^"]*\bfi-sc-text\b)[^"]*"[^>]*>\s*ex-VAT · 3 offers/');
 });
 
-it('puts the Details aside\'s actions on its heading row', function () {
+it('puts the Details aside\'s actions on a header row of their own, its entries keeping their own names', function () {
     get(GadgetResource::getUrl('view', ['record' => gadget()]))
         ->assertOk()
         ->assertSeeInOrder(['fi-section-header', 'Edit details', 'fi-section-content', 'Aside code'], escape: false);
 
     Livewire::test(ViewGadget::class, ['record' => gadget()->getRouteKey()])
+        ->assertSchemaComponentExists('code', 'infolist')
         ->callAction(TestAction::make('editDetails')->schemaComponent('details::section', 'infolist'))
         ->assertHasNoActionErrors();
 });
