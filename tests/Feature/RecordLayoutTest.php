@@ -36,10 +36,11 @@ function figuresCounting(int $count): array
     return array_map(fn (int $index): TextEntry => Figure::make("figure_{$index}")->state($index), range(1, $count));
 }
 
-it('renders the Figures strip, then the Main column beside a single Details aside', function () {
+it('renders the Figures strip, then the Main column beside a single Details aside with no heading', function () {
     $page = get(GadgetResource::getUrl('view', ['record' => gadget()]))->assertOk();
 
-    $page->assertSeeTextInOrder(['Stock figure', 'Reorder figure', 'Lead time figure', 'Main notes', 'Handle with care', 'Details', 'Aside code', 'G-0001']);
+    $page->assertSeeTextInOrder(['Stock figure', 'Reorder figure', 'Lead time figure', 'Main notes', 'Handle with care', 'Aside code', 'G-0001'])
+        ->assertDontSeeText('Details');
 
     expect(substr_count($page->getContent(), DetailsAside::CSS_CLASS))->toBe(1);
 });
@@ -89,7 +90,7 @@ it('shows a Figure\'s label, value and caption aligned to the end, the label sti
 it('puts the Details aside\'s actions on its heading row', function () {
     get(GadgetResource::getUrl('view', ['record' => gadget()]))
         ->assertOk()
-        ->assertSeeInOrder(['fi-section-header', 'Details', 'Edit details', 'fi-section-content', 'Aside code'], escape: false);
+        ->assertSeeInOrder(['fi-section-header', 'Edit details', 'fi-section-content', 'Aside code'], escape: false);
 
     Livewire::test(ViewGadget::class, ['record' => gadget()->getRouteKey()])
         ->callAction(TestAction::make('editDetails')->schemaComponent('details::section', 'infolist'))
@@ -107,7 +108,7 @@ it('leaves the Figures strip out of a record page that declares no Figures', fun
 
     get(GadgetResource::getUrl('view', ['record' => gadget()]))
         ->assertOk()
-        ->assertSeeTextInOrder(['Main notes', 'Details', 'Aside code'])
+        ->assertSeeTextInOrder(['Main notes', 'Aside code'])
         ->assertDontSeeText('Stock figure');
 });
 

@@ -29,7 +29,7 @@ function contactGadget(array $attributes = []): Gadget
 
 it('groups the Details aside under headings, a hairline above every group but the first', function () {
     $html = get(GadgetResource::getUrl('view', ['record' => contactGadget()]))
-        ->assertSeeTextInOrder(['Details', 'Identity', 'Aside code', 'Contact', 'Mobile'])
+        ->assertSeeTextInOrder(['Identity', 'Aside code', 'Contact', 'Mobile'])
         ->getContent();
 
     expect(substr_count($html, 'fux-details-group'))->toBe(2)

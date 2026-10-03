@@ -9,7 +9,8 @@ use Filament\Schemas\Components\Section;
 
 /**
  * The record's facts, one third wide from `lg`, beside the Main column: the only boxed region on a record page, compact,
- * with inline labels, and sticky so it stays in view while a long Related list scrolls. The stickiness is the one class
+ * with inline labels, and sticky so it stays in view while a long Related list scrolls. It has no heading, as its box
+ * and its groups' headings already say what it holds; its actions, when given, sit on a header row of their own. The stickiness is the one class
  * in the package's `layout.css`.
  */
 final class DetailsAside
@@ -22,7 +23,8 @@ final class DetailsAside
      */
     public static function make(array $components, array $actions = []): Section
     {
-        return Section::make('Details')
+        return Section::make()
+            ->key('details::section')
             ->headerActions($actions)
             ->compact()
             ->inlineLabel()
