@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
  * For a List page or a relation manager with tabs, such as All, Active and Stale: the tabs become one button group on
  * the list's search row, before its own toolbar actions (on a List page by itself; a relation manager, which defines
  * its own table(), puts viewChoice() in its toolbarActions()), each labelled with its count ("Stale 8";
- * a button's badge is a corner dot too small to read), the chosen one primary, instead of a row of tabs above the
+ * a button's badge is a corner dot too small to read), the chosen one primary and pressed, instead of a row of tabs above the
  * list. Choosing one filters the list as its tab would. A tab counting 0 has no work waiting and is left out, unless
  * it is the one open; with one tab left there is nothing to choose, and the group is left out too.
  */
@@ -51,6 +51,8 @@ trait HasViewChoice
             ->map(fn (string $count, string $key): Action => Action::make('show'.Str::studly($key))
                 ->label(trim("{$this->getCachedTabs()[$key]->getLabel()} {$count}"))
                 ->color(fn (): string => $this->activeTab === $key ? 'primary' : 'gray')
+                // The chosen one is pressed, so a screen reader says which is open, not the colour alone.
+                ->extraAttributes(fn (): array => ['aria-pressed' => $this->activeTab === $key ? 'true' : 'false'])
                 ->visible(fn (): bool => $isShown($key))
                 ->action(function () use ($key): void {
                     $this->activeTab = $key;

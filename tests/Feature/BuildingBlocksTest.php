@@ -67,7 +67,7 @@ it('stores a phone number in international form, and reads one in the region in 
         ->and(ContactEntry::e164('call the office'))->toBeNull();
 });
 
-it('puts a Related list\'s tabs on its search row as one button group labelled with the counts, the chosen one primary', function () {
+it('puts a Related list\'s tabs on its search row as one button group labelled with the counts, the chosen one primary and pressed', function () {
     $gadget = contactGadget();
     $kept = $gadget->parts()->create(['name' => 'Kept part', 'is_active' => true]);
     $retired = $gadget->parts()->create(['name' => 'Retired part', 'is_active' => false]);
@@ -85,6 +85,9 @@ it('puts a Related list\'s tabs on its search row as one button group labelled w
         ->assertCanSeeTableRecords([$kept])
         ->assertCanNotSeeTableRecords([$retired])
         ->assertActionHasColor(TestAction::make('showActive')->table(), 'primary');
+
+    expect(substr_count($parts->html(), 'aria-pressed="true"'))->toBe(1)
+        ->and(substr_count($parts->html(), 'aria-pressed="false"'))->toBe(1);
 });
 
 it('puts a List page\'s tabs on its search row, leaving out a tab with nothing waiting unless it is open', function () {
