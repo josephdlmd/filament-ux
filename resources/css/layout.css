@@ -39,6 +39,20 @@
     }
 }
 
+/* A view choice too wide for its toolbar, such as seven tabs at 200% zoom, wraps inside the card instead of running
+ * off it, out of sight and reach (WCAG 1.4.10); at desktop width nothing changes. Filament's button group is a column
+ * grid, which can't wrap, and the toolbar's actions keep their full width, so each line is needed: flex to wrap, a
+ * width cap to wrap within, and each button its own width rather than an equal share. */
+.fi-ta-header-toolbar .fi-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 100%;
+
+    & > .fi-btn {
+        flex: 0 1 auto;
+    }
+}
+
 /* A form with inline labels keeps each label close to its field: a label column just wide enough for a two-word
  * label, not a third of the form. */
 .fi-fo-field.fi-fo-field-has-inline-label {
