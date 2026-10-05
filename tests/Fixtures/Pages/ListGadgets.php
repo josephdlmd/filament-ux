@@ -15,6 +15,14 @@ class ListGadgets extends ListRecords
 
     protected static string $resource = GadgetResource::class;
 
+    /**
+     * A change made by an action on the page, as a row action's would be.
+     */
+    public function checkGadget(int $id): void
+    {
+        Gadget::query()->whereKey($id)->update(['status' => 'active']);
+    }
+
     public function getTabs(): array
     {
         return [

@@ -109,6 +109,16 @@ it('puts a List page\'s tabs on its search row, leaving out a tab with nothing w
         ->assertCanNotSeeTableRecords([$toCheck, $active]);
 });
 
+it('reads each tab\'s count after an action, so a count never lags the change', function () {
+    $toCheck = contactGadget(['name' => 'Unchecked gadget', 'status' => 'to_check']);
+    contactGadget(['name' => 'Another unchecked gadget', 'status' => 'to_check']);
+
+    Livewire::test(ListGadgets::class)
+        ->assertActionHasLabel(TestAction::make('showToCheck')->table(), 'To check 2')
+        ->call('checkGadget', $toCheck->getKey())
+        ->assertActionHasLabel(TestAction::make('showToCheck')->table(), 'To check 1');
+});
+
 it('leaves out the view choice when nothing is waiting, as one tab is no choice', function () {
     contactGadget();
 

@@ -39,17 +39,39 @@ trait HasViewChoice
     }
 
     /**
-     * The tabs as one button group, each action named "show" and its tab's key ("showStale").
+     * The tab counts as last read, cleared before each render (renderingHasViewChoice()), so they are read after an
+     * action rather than when the table was built before it: a count never lags the action that changed it.
+     *
+     * @var array<string, string>|null
+     */
+    protected ?array $viewChoiceCounts = null;
+
+    public function renderingHasViewChoice(): void
+    {
+        $this->viewChoiceCounts = null;
+    }
+
+    /**
+     * Each tab's count, keyed by tab, read once per render.
+     *
+     * @return array<string, string>
+     */
+    protected function viewChoiceCounts(): array
+    {
+        return $this->viewChoiceCounts ??= collect($this->getCachedTabs())->map(fn (Tab $tab): string => (string) $tab->getBadge())->all();
+    }
+
+    /**
+     * The tabs as one button group, each action named "show" and its tab's key ("showStale"). Labels and visibility
+     * read the counts when the group renders (viewChoiceCounts()).
      */
     protected function viewChoice(): ActionGroup
     {
-        $counts = collect($this->getCachedTabs())->map(fn (Tab $tab): string => (string) $tab->getBadge());
+        $isShown = fn (string $key): bool => $this->activeTab === $key || ($this->viewChoiceCounts()[$key] ?? '0') !== '0';
 
-        $isShown = fn (string $key): bool => $this->activeTab === $key || $counts[$key] !== '0';
-
-        return ActionGroup::make($counts
-            ->map(fn (string $count, string $key): Action => Action::make('show'.Str::studly($key))
-                ->label(trim("{$this->getCachedTabs()[$key]->getLabel()} {$count}"))
+        return ActionGroup::make(collect($this->getCachedTabs())
+            ->map(fn (Tab $tab, string $key): Action => Action::make('show'.Str::studly($key))
+                ->label(fn (): string => trim("{$tab->getLabel()} ".($this->viewChoiceCounts()[$key] ?? '')))
                 ->color(fn (): string => $this->activeTab === $key ? 'primary' : 'gray')
                 // The chosen one is pressed, so a screen reader says which is open, not the colour alone.
                 ->extraAttributes(fn (): array => ['aria-pressed' => $this->activeTab === $key ? 'true' : 'false'])
@@ -61,6 +83,6 @@ trait HasViewChoice
             ->values()
             ->all())
             ->buttonGroup()
-            ->visible(fn (): bool => $counts->keys()->filter($isShown)->count() > 1);
+            ->visible(fn (): bool => collect(array_keys($this->getCachedTabs()))->filter($isShown)->count() > 1);
     }
 }
